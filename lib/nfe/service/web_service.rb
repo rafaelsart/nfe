@@ -38,6 +38,20 @@ module NFe
         @client.operations
       end
 
+      def nfe_status_servico_nf2(nfeDadosMsg)
+        response = @client.call(:nfe_status_servico_nf2, 
+          soap_action: "nfe_status_servico_nf2",
+          soap_header: {
+            "nfeCabecMsg" => {
+              :@xmlns => "http://www.portalfiscal.inf.br/nfe/wsdl/NfeStatusServico2",
+              "cUF" => '33',
+              "versaoDados" => '3.10'
+            }, 
+          },
+          message: nfeDadosMsg
+        )
+      end
+
     end
 
   end
