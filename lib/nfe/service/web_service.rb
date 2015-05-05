@@ -52,6 +52,20 @@ module NFe
         )
       end
 
+      def nfe_autorizacao_lote(nfeDadosMsg)
+        response = @client.call(:nfe_autorizacao_lote,
+          soap_action: "nfe_autorizacao_lote",
+          soap_header: {
+            "nfeCabecMsg" => {
+              :@xmlns => "http://www.portalfiscal.inf.br/nfe/wsdl/NfeAutorizacao",
+              "cUF" => "33",
+              "versaoDados" => "3.10"
+            }, 
+          },
+          message: nfeDadosMsg
+        )
+      end
+
     end
 
   end
