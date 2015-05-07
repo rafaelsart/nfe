@@ -24,6 +24,26 @@ module NFe
     	request(:nfe_autorizacao_lote, message)
     end
 
+    def self.calcula_dv(chave43)
+	    multiplicadores = %w(2 3 4 5 6 7 8 9)
+	    i = 42
+	    soma_ponderada = 0
+	    while (i >= 0) do
+	      (0..7).each do |m|
+	        if i >= 0
+	          soma_ponderada += chave43[i].to_i * multiplicadores[m].to_i
+	          i -= 1
+	        end
+	      end
+	    end
+	    resto = soma_ponderada % 11
+	    if (resto == '0' || resto == '1')
+	        return 0
+	    else
+	        return (11 - resto)
+	    end
+	  end
+
 
     private
 
