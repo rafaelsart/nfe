@@ -1,5 +1,8 @@
-= NF-e
-Nota Fiscal Eletrônica
+# NF-e
+Gem para envio de Nota Fiscal Eletrônica
+
+## Instalação
+    gem 'nfe', github: 'moobile/nfe'
 
 Adicione suas configurações ao arquivo `config/initializers/nfe.rb`.
 
@@ -16,3 +19,6 @@ NFe.configure do |config|
   config.uf = :RJ
 end
 ```
+
+## Exemplo de uso
+    response = NFe::Service.status_servico
