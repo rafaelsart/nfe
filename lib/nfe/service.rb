@@ -10,13 +10,22 @@ module NFe
     	@nfe_service = NFe::WebService.new wsdl
     end
 
-    def status_servico(data)
+    def status_servico
+    	data = {
+	      consStatServ: {
+	        :@xmlns => "http://www.portalfiscal.inf.br/nfe",
+	        :@versao => NFe.configuration.versao,
+	        tpAmb: NFe.configuration.tpAmb,
+	        cUF: NFe.configuration.cUF,
+	        xServ: "STATUS",
+	      },
+	    }
       request(:nfe_status_servico_nf2, data)
     end
 
     def autorizacao(data)
-    	data = sign(data)
-      request(:nfe_autorizacao_lote, data)
+    	message = sign_nfe(data)
+    	request(:nfe_autorizacao_lote, message)
     end
 
 
@@ -32,7 +41,7 @@ module NFe
         "nfeCabecMsg" => {
           :@xmlns => "http://www.portalfiscal.inf.br/nfe/wsdl/#{METHODS[operation]}",
           "cUF" => "33",
-          "versaoDados" => "3.10"
+          "versaoDados" => NFe.configuration.versao
         }, 
       }
   	end
@@ -41,7 +50,7 @@ module NFe
     	OpenSSL::PKCS12.new(File.read(NFe.configuration.pfx_path), NFe.configuration.cert_passwd)
     end
 
-  	def sign(xml)
+  	def sign_nfe(xml)
 	    xml = Nokogiri::XML(xml.to_s, &:noblanks)
 
 	    # 1. Digest Hash for all XML

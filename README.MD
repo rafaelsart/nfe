@@ -10,6 +10,9 @@ NFe.configure do |config|
   config.ca_path 		= "YOUR_CA_PATH"
   config.pfx_path 		= "YOUR_PFX_PATH"
   config.cert_passwd	= "YOUR_CERT_PASSWORD"
-  config.versao 		= "3.10"
+
+  config.ambiente = :homologacao # [:producao, :homologacao]
+  config.versao = "3.10"
+  config.uf = :RJ
 end
 ```
