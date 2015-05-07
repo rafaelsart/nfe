@@ -6,10 +6,6 @@ module NFe
       nfe_autorizacao_lote: "NfeAutorizacao",
     }
 
-    def initialize(wsdl)
-    	@nfe_service = NFe::WebService.new wsdl
-    end
-
     def status_servico
     	data = {
 	      consStatServ: {
@@ -32,7 +28,8 @@ module NFe
     private
 
     def request(operation, message)
-      @nfe_service.call operation, header(operation), message
+    	nfe_service = NFe::WebService.new NFe.configuration.wdsl_url(operation)
+      nfe_service.call operation, header(operation), message
     rescue Savon::Error
     end
 
@@ -40,7 +37,7 @@ module NFe
       {
         "nfeCabecMsg" => {
           :@xmlns => "http://www.portalfiscal.inf.br/nfe/wsdl/#{METHODS[operation]}",
-          "cUF" => "33",
+          "cUF" => NFe.configuration.cUF,
           "versaoDados" => NFe.configuration.versao
         }, 
       }

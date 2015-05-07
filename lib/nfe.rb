@@ -18,6 +18,10 @@ module NFe
 	  def tpAmb
 	  	TIPOS_AMBIENTE[@ambiente.upcase]
 	  end
+
+	  def wdsl_url(operation)
+	  	SOAP_URLS[@uf.upcase][@ambiente.upcase][operation]
+	  end
   end
 
   def self.configuration
@@ -62,5 +66,28 @@ module NFe
     :PRODUCAO 		=> 1,
     :HOMOLOGACAO 	=> 2
   }.freeze
+
+  SOAP_URLS = {
+		:RJ => {
+			:PRODUCAO => {
+				:status_servico => '',
+				:autorizacao => '',
+			},
+			:HOMOLOGACAO => {
+				:nfe_status_servico_nf2 	=> 'https://nfe-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx?wsdl',
+				:nfe_autorizacao_lote 		=> 'https://nfe-homologacao.svrs.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao.asmx?wsdl',
+			}
+		},
+		:SP => {
+			:PRODUCAO => {
+				:status_servico => '',
+				:autorizacao => '',
+			},
+			:HOMOLOGACAO => {
+				:status_servico => '',
+				:autorizacao => '',
+			}
+		},
+	}.freeze
 
 end
