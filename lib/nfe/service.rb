@@ -68,8 +68,22 @@ module NFe
     end
 
   	def self.sign_nfe(xml)
-	    xml = Nokogiri::XML(xml.to_s, &:noblanks)
-	    chave_acesso = xml.css("infNFe").first["Id"]
+  		xml = Nokogiri::XML(xml.to_s, &:noblanks)
+
+  		chave43 = (xml.search('cUF').text.rjust(2, "0"))+
+  							(xml.search('dhEmi').text[2..6].gsub! "-", "")+
+  							(xml.search('CNPJ').text.rjust(14, "0"))+
+  							(xml.search('mod').text.rjust(2, "0"))+
+  							(xml.search('serie').text.rjust(3, "0"))+
+  							(xml.search('nNF').text.rjust(9, "0"))+
+  							(xml.search('tpEmis').text)+
+  							(xml.search('cNF').text.rjust(8, "0"))
+      
+      cDV = self.calcula_dv(chave43)
+      chave_acesso = "NFe#{chave43}#{cDV}"
+      xml.search('cDV').first.inner_html = cDV.to_s
+      xml.css("infNFe").first.attribute("Id").value = chave_acesso.to_s
+
 	    xml_canon = xml.xpath("//xmlns:infNFe", "xmlns" => "http://www.portalfiscal.inf.br/nfe").first.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
 	    xml_digest = Base64.encode64(OpenSSL::Digest::SHA1.digest(xml_canon)).strip
 	    signature = Nokogiri::XML::Node.new('Signature', xml)
@@ -83,7 +97,7 @@ module NFe
 	    child_node['Algorithm'] = 'http://www.w3.org/2000/09/xmldsig#rsa-sha1'
 	    signature_info.add_child child_node
 	    reference = Nokogiri::XML::Node.new('Reference', xml)
-	    reference['URI'] = chave_acesso
+	    reference['URI'] = "##{chave_acesso.to_s}"
 	    transforms = Nokogiri::XML::Node.new('Transforms', xml)
 	    child_node  = Nokogiri::XML::Node.new('Transform', xml)
 	    child_node['Algorithm'] = 'http://www.w3.org/2000/09/xmldsig#enveloped-signature'
