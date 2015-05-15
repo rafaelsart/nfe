@@ -21,8 +21,27 @@ module NFe
 
     def self.autorizacao(data)
     	message = sign_nfe(data)
-    	request(:nfe_autorizacao_lote, message)
+    	request_response = request(:nfe_autorizacao_lote, message)
+
+    	if (request_response.body[:nfe_autorizacao_lote_result])
+    		resp = {
+    			:requestResponse 					=> request_response, 
+    			:nfeAutorizacaoLoteResult => request_response.body[:nfe_autorizacao_lote_result],
+    			:cStat 										=> request_response.body[:nfe_autorizacao_lote_result][:ret_envi_n_fe][:c_stat],
+    			:xMotivo 									=> request_response.body[:nfe_autorizacao_lote_result][:ret_envi_n_fe][:x_motivo],
+    			:nfeProc 									=> nfe_proc(message, request_response.body[:nfe_autorizacao_lote_result][:ret_envi_n_fe][:prot_n_fe]),
+    		}
+    	else
+    		resp = {
+    			:requestResponse 	=> nil, 
+    			:cStat 						=> nil,
+    			:xMotivo 					=> nil,
+    			:nfeProc 					=> nil,
+    		}
+    	end
+    	resp
     end
+
 
     def self.calcula_dv(chave43)
 	    multiplicadores = %w(2 3 4 5 6 7 8 9)
@@ -65,6 +84,34 @@ module NFe
 
   	def self.certificado
     	OpenSSL::PKCS12.new(File.read(NFe.configuration.pfx_path), NFe.configuration.cert_passwd)
+    end
+
+    def self.nfe_proc(message, prot_nfe)
+    	if prot_nfe
+	    	xml_nfe = Nokogiri::XML(message.to_s, &:noblanks).xpath("//xmlns:NFe", "xmlns" => "http://www.portalfiscal.inf.br/nfe").first.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
+	    	
+	    	final = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+				<nfeProc versao=\"3.10\" xmlns=\"http://www.portalfiscal.inf.br/nfe\">
+					#{xml_nfe}
+					<protNFe versao=\"3.10\">
+						<infProt>
+							<tpAmb>#{prot_nfe[:inf_prot][:tp_amb]}</tpAmb>
+							<verAplic>#{prot_nfe[:inf_prot][:ver_aplic]}</verAplic>
+							<chNFe>#{prot_nfe[:inf_prot][:ch_n_fe]}</chNFe>
+							<dhRecbto>#{prot_nfe[:inf_prot][:dh_recbto].strftime("%FT%T%:z")}</dhRecbto>
+							<nProt>#{prot_nfe[:inf_prot][:n_prot]}</nProt>
+							<digVal>#{prot_nfe[:inf_prot][:dig_val]}</digVal>
+							<cStat>#{prot_nfe[:inf_prot][:c_stat]}</cStat>
+							<xMotivo>#{prot_nfe[:inf_prot][:x_motivo]}</xMotivo>
+						</infProt>
+					</protNFe>
+				</nfeProc>"
+
+				resp = Nokogiri::XML(final.to_s, &:noblanks)
+				resp.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
+			else
+				nil
+			end
     end
 
   	def self.sign_nfe(xml)
