@@ -12,6 +12,6 @@ Gem::Specification.new do |s|
   s.description = "Nota Fiscal Eletrônica"
   s.files       = ["lib/nfe.rb"]
 
-  s.add_runtime_dependency 'savon'
+  s.add_runtime_dependency 'savon', '~> 2.11', '>= 2.11.0'
   s.add_runtime_dependency 'httpclient'
 end
