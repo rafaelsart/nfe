@@ -38,6 +38,8 @@ module NFe
     end
 
     def call(operation, header, message)
+      message = Nokogiri::XML(message.to_s, &:noblanks).canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
+
       response = @client.call(operation, 
         soap_action: operation,
         soap_header: header,
