@@ -55,8 +55,8 @@ module NFe
 	        end
 	      end
 	    end
-	    resto = soma_ponderada % 11
-	    if (resto == '0' || resto == '1')
+	    resto = (soma_ponderada % 11).to_i
+	    if (resto == 0 || resto == 1)
 	        return 0
 	    else
 	        return (11 - resto)
