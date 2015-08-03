@@ -70,8 +70,8 @@ module NFe
   SOAP_URLS = {
 		:RJ => {
 			:PRODUCAO => {
-				:status_servico => '',
-				:autorizacao => '',
+				:nfe_status_servico_nf2 => 'https://nfe.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx?wsdl',
+				:nfe_autorizacao_lote   => 'https://nfe.svrs.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao.asmx?wsdl',
 			},
 			:HOMOLOGACAO => {
 				:nfe_status_servico_nf2 	=> 'https://nfe-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx?wsdl',
