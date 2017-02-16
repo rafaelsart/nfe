@@ -25,7 +25,7 @@ module NFe
 
     	if (request_response.body[:nfe_autorizacao_lote_result])
     		resp = {
-    			:requestResponse 					=> request_response, 
+    			:requestResponse 					=> request_response,
     			:nfeAutorizacaoLoteResult => request_response.body[:nfe_autorizacao_lote_result],
     			:cStat 										=> request_response.body[:nfe_autorizacao_lote_result][:ret_envi_n_fe][:c_stat],
     			:xMotivo 									=> request_response.body[:nfe_autorizacao_lote_result][:ret_envi_n_fe][:x_motivo],
@@ -33,7 +33,7 @@ module NFe
     		}
     	else
     		resp = {
-    			:requestResponse 	=> nil, 
+    			:requestResponse 	=> nil,
     			:cStat 						=> nil,
     			:xMotivo 					=> nil,
     			:nfeProc 					=> nil,
@@ -78,7 +78,7 @@ module NFe
           :@xmlns => "http://www.portalfiscal.inf.br/nfe/wsdl/#{METHODS[operation]}",
           "cUF" => NFe.configuration.cUF,
           "versaoDados" => NFe.configuration.versao
-        }, 
+        },
       }
   	end
 
@@ -89,7 +89,7 @@ module NFe
     def self.nfe_proc(message, prot_nfe)
     	if prot_nfe
 	    	xml_nfe = Nokogiri::XML(message.to_s, &:noblanks).xpath("//xmlns:NFe", "xmlns" => "http://www.portalfiscal.inf.br/nfe").first.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
-	    	
+
 	    	final = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
 				<nfeProc versao=\"3.10\" xmlns=\"http://www.portalfiscal.inf.br/nfe\">
 					#{xml_nfe}
@@ -125,7 +125,7 @@ module NFe
   							(xml.search('nNF').text.rjust(9, "0"))+
   							(xml.search('tpEmis').text)+
   							(xml.search('cNF').text.rjust(8, "0"))
-      
+
       cDV = self.calcula_dv(chave43)
       chave_acesso = "NFe#{chave43}#{cDV}"
       xml.search('cDV').first.inner_html = cDV.to_s
