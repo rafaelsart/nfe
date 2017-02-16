@@ -80,12 +80,12 @@ module NFe
 		},
 		:SP => {
 			:PRODUCAO => {
-				:status_servico => '',
-				:autorizacao => '',
+				:nfe_status_servico_nf2 => 'https://nfe.fazenda.sp.gov.br/ws/nfestatusservico2.asmx',
+				:nfe_autorizacao_lote => 'https://nfe.fazenda.sp.gov.br/ws/nfeautorizacao.asmx',
 			},
 			:HOMOLOGACAO => {
-				:status_servico => '',
-				:autorizacao => '',
+				:nfe_status_servico_nf2 => 'https://homologacao.nfe.fazenda.sp.gov.br/ws/nfestatusservico2.asmx',
+				:nfe_autorizacao_lote => 'https://homologacao.nfe.fazenda.sp.gov.br/ws/nfeautorizacao.asmx',
 			}
 		},
 	}.freeze
