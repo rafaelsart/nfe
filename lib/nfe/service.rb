@@ -46,6 +46,7 @@ module NFe
 			message = Nokogiri::XML(data.to_s, &:noblanks)
 			message.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
 			request_response = request(:nfe_consulta_lote, message)
+			request_response
 		end
 
     def self.calcula_dv(chave43)
