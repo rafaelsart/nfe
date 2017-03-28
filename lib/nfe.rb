@@ -72,20 +72,24 @@ module NFe
 			:PRODUCAO => {
 				:nfe_status_servico_nf2 => 'https://nfe.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx?wsdl',
 				:nfe_autorizacao_lote   => 'https://nfe.svrs.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao.asmx?wsdl',
+        :nfe_consulta_lote      => '',
 			},
 			:HOMOLOGACAO => {
 				:nfe_status_servico_nf2 	=> 'https://nfe-homologacao.svrs.rs.gov.br/ws/NfeStatusServico/NfeStatusServico2.asmx?wsdl',
 				:nfe_autorizacao_lote 		=> 'https://nfe-homologacao.svrs.rs.gov.br/ws/NfeAutorizacao/NFeAutorizacao.asmx?wsdl',
+        :nfe_consulta_lote        => '',
 			}
 		},
 		:SP => {
 			:PRODUCAO => {
 				:nfe_status_servico_nf2 => 'https://nfe.fazenda.sp.gov.br/ws/nfestatusservico2.asmx?wsdl',
 				:nfe_autorizacao_lote => 'https://nfe.fazenda.sp.gov.br/ws/nfeautorizacao.asmx?wsdl',
+        :nfe_consulta_lote => 'https://nfe.fazenda.sp.gov.br/ws/nferetautorizacao.asmx?wsdl',
 			},
 			:HOMOLOGACAO => {
 				:nfe_status_servico_nf2 => 'https://homologacao.nfe.fazenda.sp.gov.br/ws/nfestatusservico2.asmx?wsdl',
 				:nfe_autorizacao_lote => 'https://homologacao.nfe.fazenda.sp.gov.br/ws/nfeautorizacao.asmx?wsdl',
+        :nfe_consulta_lote => 'https://homologacao.nfe.fazenda.sp.gov.br/ws/nferetautorizacao.asmx?wsdl',
 			}
 		},
 	}.freeze

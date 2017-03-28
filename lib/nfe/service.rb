@@ -1,9 +1,9 @@
-
 module NFe
 	class Service
 		METHODS = {
       nfe_status_servico_nf2: "NfeStatusServico2",
       nfe_autorizacao_lote: "NfeAutorizacao",
+			nfe_consulta_lote: "NfeRetAutorizacao"
     }
 
     def self.status_servico
@@ -42,6 +42,12 @@ module NFe
     	resp
     end
 
+		def self.consulta_nfe(data)
+			message = sign_consulta_nfe(data)
+			message = Nokogiri::XML(message.to_s, &:noblanks)
+			message.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
+			request_response = request(:nfe_consulta_lote, message)
+		end
 
     def self.calcula_dv(chave43)
 	    multiplicadores = %w(2 3 4 5 6 7 8 9)
