@@ -3,7 +3,7 @@ module NFe
 		METHODS = {
       nfe_status_servico_nf2: "NfeStatusServico2",
       nfe_autorizacao_lote: "NfeAutorizacao",
-			nfe_consulta_lote: "NfeRetAutorizacao"
+			nfe_consulta_lote: "NfeRetAutorizacao",
     }
 
     def self.status_servico
@@ -44,7 +44,7 @@ module NFe
 
 		def self.consulta_nfe(data)
 			message = Nokogiri::XML(data.to_s, &:noblanks)
-			message.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
+			message = message.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
 			request_response = request(:nfe_consulta_lote, message)
 			request_response
 		end
