@@ -43,8 +43,7 @@ module NFe
     end
 
 		def self.consulta_nfe(data)
-			message = sign_consulta_nfe(data)
-			message = Nokogiri::XML(message.to_s, &:noblanks)
+			message = Nokogiri::XML(data.to_s, &:noblanks)
 			message.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
 			request_response = request(:nfe_consulta_lote, message)
 		end
