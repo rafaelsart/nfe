@@ -74,7 +74,11 @@ module NFe
 
     def self.request(operation, message)
     	nfe_service = NFe::WebService.new NFe.configuration.wdsl_url(operation)
-      nfe_service.call operation, header(operation), message
+			if operation.to_s == "nfe_consulta_lote"
+				nfe_service.call operation, header_consulta, message
+			else
+      	nfe_service.call operation, header(operation), message
+			end
     rescue Savon::Error
     end
 
@@ -87,6 +91,20 @@ module NFe
         },
       }
   	end
+
+		def self.header_consulta
+			{
+				"nfeCabecMsg" => {
+					:versaoDados => 1.10
+				},
+				:attributes! => {
+					"nfeCabecMsg" => {
+						:@xmlns => "http://www.portalfiscal.inf.br/nfe",
+						"version" => 1.02
+					}
+				},
+			}
+		end
 
   	def self.certificado
     	OpenSSL::PKCS12.new(File.read(NFe.configuration.pfx_path), NFe.configuration.cert_passwd)
