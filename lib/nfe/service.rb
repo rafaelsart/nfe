@@ -3,7 +3,10 @@ module NFe
 		METHODS = {
       nfe_status_servico_nf2: "NfeStatusServico2",
       nfe_autorizacao_lote: "NfeAutorizacao",
-			nfe_consulta_lote: "NfeRetAutorizacao",
+			nfe_ret_autorizacao_lote: "NfeRetAutorizacao",
+			nfe_consulta_nf2: "NfeConsulta2",
+			nfe_recepcao_evento: "RecepcaoEvento",
+			nfe_download_nf: "NfeDownloadNF"
     }
 
     def self.status_servico
@@ -16,12 +19,12 @@ module NFe
 	        xServ: "STATUS",
 	      },
 	    }
-      self.request(:nfe_status_servico_nf2, data)
+      self.request(:nfe_status_servico_nf2, versao = "3.10", data)
     end
 
     def self.autorizacao(data)
     	message = sign_nfe(data)
-    	request_response = request(:nfe_autorizacao_lote, message)
+    	request_response = request(:nfe_autorizacao_lote, versao, message)
 
     	if (request_response.body[:nfe_autorizacao_lote_result])
     		resp = {
@@ -43,10 +46,32 @@ module NFe
     end
 
 		def self.consulta_nfe(data)
-			message = Nokogiri::XML(data.to_s, &:noblanks)
-			message = message.canonicalize(Nokogiri::XML::XML_C14N_EXCLUSIVE_1_0)
-			request_response = request(:nfe_consulta_lote, message)
+			puts "Aopa"
+			byebug
+			request_response = request(:nfe_ret_autorizacao_lote, versao = "3.10", data)
+			byebug
 			request_response
+		end
+
+		def self.consulta_prot_nfe(data)
+			consulta_prot_response = self.request(:nfe_consulta_nf2, versao = "3.10", data)
+			consulta_prot_response
+		end
+
+		def self.manifestacao_nfe(data)
+			puts "Aopa"
+			byebug
+      manifestacao_response = self.request(:nfe_recepcao_evento, versao = "1.00", data)
+			byebug
+			manifestacao_response
+		end
+
+		def self.download_nfe(data)
+			puts "Aopa"
+			byebug
+      download_nfe_response = self.request(:nfe_download_nf, versao = "1.00", data)
+			byebug
+			download_nfe_response
 		end
 
     def self.calcula_dv(chave43)
@@ -70,41 +95,24 @@ module NFe
 	  end
 
 
-    private
+    # private
 
-    def self.request(operation, message)
+    def self.request(operation, versao, message)
     	nfe_service = NFe::WebService.new NFe.configuration.wdsl_url(operation)
-			if operation.to_s == "nfe_consulta_lote"
-				nfe_service.call operation, header_consulta, message
-			else
-      	nfe_service.call operation, header(operation), message
-			end
-    rescue Savon::Error
+
+			nfe_service.call operation, header(operation, versao), message
+    	rescue Savon::Error
     end
 
-    def self.header(operation)
+    def self.header(operation, versao)
       {
         "nfeCabecMsg" => {
           :@xmlns => "http://www.portalfiscal.inf.br/nfe/wsdl/#{METHODS[operation]}",
           "cUF" => NFe.configuration.cUF,
-          "versaoDados" => NFe.configuration.versao
+          "versaoDados" => versao
         },
       }
   	end
-
-		def self.header_consulta
-			{
-				"nfeCabecMsg" => {
-					:versaoDados => 1.10
-				},
-				:attributes! => {
-					"nfeCabecMsg" => {
-						:@xmlns => "http://www.portalfiscal.inf.br/nfe",
-						"version" => 1.02
-					}
-				},
-			}
-		end
 
   	def self.certificado
     	OpenSSL::PKCS12.new(File.read(NFe.configuration.pfx_path), NFe.configuration.cert_passwd)
